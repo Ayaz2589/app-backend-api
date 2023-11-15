@@ -1,5 +1,5 @@
 import { Movie, User, JSONObject, StreamingInformation } from "../types";
-import { createPersonalInformation, createMovieDetailsInformation } from "..";
+import { createPersonalInformation, createMovieDetailsInformation } from ".";
 
 const getRandomItemdFromArray = (inputArray: Movie[]) => {
   const newArray = [];
