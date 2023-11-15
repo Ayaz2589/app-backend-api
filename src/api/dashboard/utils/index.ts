@@ -4,5 +4,5 @@ export { default as createMovieDetailsInformation } from "./createMovieDetailsIn
 export { default as createStreamingInformtion } from "./createStreamingInformation";
 export { default as createDummyDataJSON } from "./createDummyData";
 export { default as formatUsersForTable } from "./formatUsersForTable";
-export { default as formatUserMoviesForTable } from "./dashboardUtils/formatUserMoviesForTable";
+export { default as formatUserMoviesForTable } from "./formatUserMoviesForTable";
 export { default as colors } from "./colors";
