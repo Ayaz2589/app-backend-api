@@ -9,4 +9,4 @@ app.get("/status", (req: Request, res: Response) => {
 
 app.use("/api/dashboard", dashboardRouter);
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.listen(8080, () => console.log("Server running on port 8080"));
