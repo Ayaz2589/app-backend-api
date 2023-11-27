@@ -56,6 +56,23 @@ router.get("/users/:id", async (req, res) => {
   res.status(200).send({ user });
 });
 
+router.patch("/users/update-email/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user == null) {
+    return res.status(400).send("Cannot find user");
+  }
+
+  const filter = { email: user.email };
+  const update = { $set: { email: req.body.new_email } };
+
+  const result = await User.updateOne(filter, update);
+
+  if (result.acknowledged && result.modifiedCount === 1) {
+    res.status(200).send();
+  }
+});
+
 router.delete("/users/:id", async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
   res.status(200).send();
