@@ -34,7 +34,6 @@ router.get("/list", async (req, res) => {
 });
 
 router.get("/id-by-email", async (req, res) => {
-  console.log(req.body);
   const user = await User.findOne({ email: req.body.email });
   res.status(200).send({ id: user?._id, email: user?.email });
 });
@@ -59,6 +58,35 @@ router.patch("/update-email/:id", async (req, res) => {
   if (result.acknowledged && result.modifiedCount === 1) {
     res.status(200).send();
   }
+});
+
+router.patch("/update-password/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  console.log(user);
+
+  if (user == null) {
+    return res.status(400).send("Cannot find user");
+  }
+
+  // const { password } = user;
+
+  // if () {
+    
+  // }
+
+  // const match = await bcrypt.compare(req.body.old_password, password);
+
+  // const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
+
+  // const filter = { email: user.email };
+  // const update = { $set: { password: req.body.new_password } };
+
+  // const result = await User.updateOne(filter, update);
+
+  // if (result.acknowledged && result.modifiedCount === 1) {
+  // }
+  res.status(200).send();
 });
 
 router.delete("/:id", async (req, res) => {
