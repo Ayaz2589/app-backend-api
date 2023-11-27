@@ -1,8 +1,16 @@
 import express, { Request, Response } from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
 import dashboardRouter from "./routes/dashboard";
 import dashboardV2Router from "./routes/dashboardV2";
+
+dotenv.config();
 const app = express();
-import cors from "cors";
+mongoose.set("strictQuery", false);
+
+const PORT = process.env.PORT || 8080;
+const CONNECTION = process.env.CONNECTION || "";
 
 app.use(express.json());
 app.use(
@@ -18,4 +26,14 @@ app.get("/status", (req: Request, res: Response) => {
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/dashboardv2", dashboardV2Router);
 
-app.listen(8080, () => console.log("Server running on port 8080"));
+const start = async () => {
+  try {
+    await mongoose.connect(CONNECTION);
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error(error);
+  }
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+};
+
+start();
