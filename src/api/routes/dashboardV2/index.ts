@@ -1,11 +1,13 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import { User } from "../../../db/models";
 
 const router = express.Router();
 
 interface User {
-  name: string;
+  email: string;
   password: string;
+  createdAt?: string;
 }
 
 const users: User[] = [];
@@ -21,12 +23,17 @@ router.get("/users", (req, res) => {
 router.post("/users", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { name: req.body.name, password: hashedPassword };
-    users.push(user);
+    const user = new User({
+      email: req.body.email,
+      password: hashedPassword,
+      createdAt: new Date().toISOString(),
+    });
+    await user.save();
     res.status(201).send();
   } catch (error) {
     res.status(500).send(error);
   }
+  res.status(201).send();
 });
 
 router.get("/users/list", (req, res) => {
@@ -34,7 +41,7 @@ router.get("/users/list", (req, res) => {
 });
 
 router.post("/users/login", async (req, res) => {
-  const user = users.find((user) => user.name === req.body.name);
+  const user = users.find((user) => user.email === req.body.email);
   if (user == null) {
     return res.status(400).send("Cannot find user");
   }
