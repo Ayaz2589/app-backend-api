@@ -3,6 +3,8 @@ import dashboardRouter from "./routes/dashboard";
 import dashboardV2Router from "./routes/dashboardV2";
 const app = express();
 import cors from "cors";
+
+app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:5173",
