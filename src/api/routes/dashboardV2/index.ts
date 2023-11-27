@@ -56,6 +56,11 @@ router.get("/users/:id", async (req, res) => {
   res.status(200).send({ user });
 });
 
+router.delete("/users/:id", async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.status(200).send();
+});
+
 router.post("/users/login", async (req, res) => {
   const user = users.find((user) => user.email === req.body.email);
   if (user == null) {
