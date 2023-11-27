@@ -4,14 +4,10 @@ import { User } from "../../../../db/models";
 
 const router = express.Router();
 
-router.get("/status", (req, res) => {
-  res.status(200).send("Dashboard V2 API is running");
-});
-
 router.post("/users", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user != null) {
-    return res.status(400).send("User already exists");
+    return res.status(400).send({ error: "User already exists" });
   }
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -47,7 +43,7 @@ router.patch("/update-email/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user == null) {
-    return res.status(400).send("Cannot find user");
+    return res.status(400).send({ error: "Cannot find user" });
   }
 
   const filter = { email: user.email };
@@ -64,7 +60,7 @@ router.patch("/update-password/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user == null) {
-    return res.status(400).send("Cannot find user");
+    return res.status(400).send({ error: "Cannot find user" });
   }
 
   const password: string = user.password || "";
@@ -72,7 +68,7 @@ router.patch("/update-password/:id", async (req, res) => {
   const match = await bcrypt.compare(req.body.old_password, password);
 
   if (!match) {
-    return res.status(400).send("Incorrect password");
+    return res.status(400).send({ error: "Incorrect password" });
   }
 
   const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
@@ -91,7 +87,7 @@ router.get("/check-password/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user == null) {
-    return res.status(400).send("Cannot find user");
+    return res.status(400).send({ error: "Cannot find user" });
   }
 
   const password: string = user.password || "";
@@ -99,10 +95,10 @@ router.get("/check-password/:id", async (req, res) => {
   const match = await bcrypt.compare(req.body.password, password);
 
   if (!match) {
-    return res.status(400).send("Incorrect password");
+    return res.status(400).send({ error: "Incorrect password" });
   }
 
-  res.status(200).send("Correct password");
+  res.status(200).send({ message: "Correct password" });
 });
 
 router.delete("/:id", async (req, res) => {
