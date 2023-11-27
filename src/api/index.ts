@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import dashboardRouter from "./routes/dashboard";
 import dashboardV2Router from "./routes/dashboardV2";
-import { User } from "../db/models";
 
 dotenv.config();
 const app = express();
@@ -26,20 +25,6 @@ app.get("/status", (req: Request, res: Response) => {
 
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/dashboardv2", dashboardV2Router);
-
-app.post("/api/users", async (req: Request, res: Response) => {
-  try {
-    const user = new User({
-      email: req.body.email,
-      password: req.body.password,
-      createdAt: new Date().toISOString(),
-    });
-    await user.save();
-    res.status(201).send();
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
 
 const start = async () => {
   try {

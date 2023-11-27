@@ -21,6 +21,10 @@ router.get("/users", (req, res) => {
 });
 
 router.post("/users", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (user != null) {
+    return res.status(400).send("User already exists");
+  }
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new User({
@@ -36,8 +40,20 @@ router.post("/users", async (req, res) => {
   res.status(201).send();
 });
 
-router.get("/users/list", (req, res) => {
-  res.json(users);
+router.get("/users/list", async (req, res) => {
+  const users = await User.find();
+  res.status(200).send({ users });
+});
+
+router.get("/users/id-by-email", async (req, res) => {
+  console.log(req.body);
+  const user = await User.findOne({ email: req.body.email });
+  res.status(200).send({ id: user?._id, email: user?.email });
+});
+
+router.get("/users/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.status(200).send({ user });
 });
 
 router.post("/users/login", async (req, res) => {
