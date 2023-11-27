@@ -63,30 +63,46 @@ router.patch("/update-email/:id", async (req, res) => {
 router.patch("/update-password/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
 
-  console.log(user);
+  if (user == null) {
+    return res.status(400).send("Cannot find user");
+  }
+
+  const password: string = user.password || "";
+
+  const match = await bcrypt.compare(req.body.old_password, password);
+
+  if (!match) {
+    return res.status(400).send("Incorrect password");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
+
+  const filter = { email: user.email };
+  const update = { $set: { password: hashedNewPassword } };
+
+  const result = await User.updateOne(filter, update);
+
+  if (result.acknowledged && result.modifiedCount === 1) {
+    res.status(200).send();
+  }
+});
+
+router.get("/check-password/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
 
   if (user == null) {
     return res.status(400).send("Cannot find user");
   }
 
-  // const { password } = user;
+  const password: string = user.password || "";
 
-  // if () {
-    
-  // }
+  const match = await bcrypt.compare(req.body.password, password);
 
-  // const match = await bcrypt.compare(req.body.old_password, password);
+  if (!match) {
+    return res.status(400).send("Incorrect password");
+  }
 
-  // const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
-
-  // const filter = { email: user.email };
-  // const update = { $set: { password: req.body.new_password } };
-
-  // const result = await User.updateOne(filter, update);
-
-  // if (result.acknowledged && result.modifiedCount === 1) {
-  // }
-  res.status(200).send();
+  res.status(200).send("Correct password");
 });
 
 router.delete("/:id", async (req, res) => {
