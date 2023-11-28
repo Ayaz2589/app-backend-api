@@ -18,9 +18,20 @@ router.post("/login", async (req, res) => {
     return res.status(400).send({ error: "Incorrect password" });
   }
 
-  const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET || "");
+  const accessToken = jwt.sign(
+    { user },
+    process.env.ACCESS_TOKEN_SECRET || "",
+    {
+      expiresIn: "1hr",
+    }
+  );
 
-  res.status(200).send({ accessToken });
+  const refreshToken = jwt.sign(
+    { user },
+    process.env.REFRESH_TOKEN_SECRET || ""
+  );
+
+  res.status(200).send({ accessToken, refreshToken });
 });
 
 export default router;
