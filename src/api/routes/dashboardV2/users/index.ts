@@ -122,10 +122,12 @@ router.post("/login", async (req, res) => {
 
   const accessToken = jwt.sign(
     { _id: user._id },
-    process.env.ACCES_TOKEN_SECRET || ""
+    process.env.ACCESS_TOKEN_SECRET || ""
   );
 
-  res.status(200).send({ accessToken });
+  res
+    .status(200)
+    .send({ accessToken, details: { email: user.email, id: user._id } });
 });
 
 export default router;
