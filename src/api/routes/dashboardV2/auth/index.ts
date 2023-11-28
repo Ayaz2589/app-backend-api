@@ -29,7 +29,7 @@ router.post("/signup", async (req, res) => {
 
     await user.save();
     await refreshTokenToSave.save();
-    
+
     res.status(201).send({ accessToken, refreshToken });
   } catch (error) {
     res.status(500).send({ error, message: "Unable to create account" });
@@ -60,7 +60,24 @@ router.post("/login", async (req, res) => {
   });
   await refreshTokenToSave.save();
 
-  res.status(200).send({ accessToken, refreshToken });
+  res.status(200).send({ accessToken, refreshToken, isLoggedin: true });
+});
+
+router.delete("/logout", async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader?.split(" ")[1];
+
+  const refreshToken = await RefreshTokenModel.findOne({
+    refreshToken: token,
+  });
+
+  if (!refreshToken) {
+    return res.status(401).send({ error: "Refresh token not found" });
+  }
+
+  await RefreshTokenModel.deleteOne({ refreshToken: token });
+
+  res.status(200).send({ isLoggedin: false });
 });
 
 router.post("/token", async (req, res) => {
@@ -92,23 +109,6 @@ router.post("/token", async (req, res) => {
     }
   );
 });
-
-// router.delete("/logout", async (req, res) => {
-//   const authHeader = req.headers["authorization"];
-//   const token = authHeader?.split(" ")[1];
-
-//   const refreshToken = await RefreshTokenModel.findOne({
-//     refreshToken: token,
-//   });
-
-//   if (!refreshToken) {
-//     return res.status(401).send({ error: "Refresh token not found" });
-//   }
-
-//   await RefreshTokenModel.deleteOne({ refreshToken: token });
-
-//   res.status(200).send();
-// });
 
 router.get("/check-db-for-refresh-token", async (req, res) => {
   const authHeader = req.headers["authorization"];
