@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { User } from "../../../../db/models";
+import { User, RefreshTokenModel } from "../../../../db/models";
 import { generateToken, refreshToken as getRefreshToken } from "./utils";
 
 const router = express.Router();
@@ -23,6 +23,10 @@ router.post("/login", async (req, res) => {
 
   //@ts-expect-error cannot figure out mongoose type error
   const refreshToken = getRefreshToken(user);
+  const refreshTokenToSave = new RefreshTokenModel({
+    refreshToken,
+  });
+  await refreshTokenToSave.save();
 
   res.status(200).send({ accessToken, refreshToken });
 });
