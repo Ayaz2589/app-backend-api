@@ -21,7 +21,6 @@ router.post("/", async (req, res) => {
   } catch (error) {
     res.status(500).send(error);
   }
-  res.status(201).send();
 });
 
 router.get("/list", async (req, res) => {

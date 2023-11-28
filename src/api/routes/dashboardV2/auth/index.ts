@@ -6,6 +6,36 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+router.post("/signup", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (user != null) {
+    return res.status(400).send({ error: "User already exists" });
+  }
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = new User({
+      email: req.body.email,
+      password: hashedPassword,
+      createdAt: new Date().toISOString(),
+    });
+    //@ts-expect-error cannot figure out mongoose type error
+    const accessToken = generateToken(user);
+
+    //@ts-expect-error cannot figure out mongoose type error
+    const refreshToken = getRefreshToken(user);
+    const refreshTokenToSave = new RefreshTokenModel({
+      refreshToken,
+    });
+
+    await user.save();
+    await refreshTokenToSave.save();
+    
+    res.status(201).send({ accessToken, refreshToken });
+  } catch (error) {
+    res.status(500).send({ error, message: "Unable to create account" });
+  }
+});
+
 router.post("/login", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
