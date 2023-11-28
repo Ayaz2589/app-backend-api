@@ -1,14 +1,13 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { User } from "../../../../db/models";
 
 const router = express.Router();
 
-router.post("/users", async (req, res) => {
+router.post("/", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user != null) {
-    return res.status(400).send({ error: "User doesn't exists" });
+    return res.status(400).send({ error: "User already exists" });
   }
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
