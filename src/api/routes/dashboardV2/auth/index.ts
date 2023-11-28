@@ -63,4 +63,41 @@ router.post("/token", async (req, res) => {
   );
 });
 
+// router.delete("/logout", async (req, res) => {
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader?.split(" ")[1];
+
+//   const refreshToken = await RefreshTokenModel.findOne({
+//     refreshToken: token,
+//   });
+
+//   if (!refreshToken) {
+//     return res.status(401).send({ error: "Refresh token not found" });
+//   }
+
+//   await RefreshTokenModel.deleteOne({ refreshToken: token });
+
+//   res.status(200).send();
+// });
+
+router.get("/check-db-for-refresh-token", async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader?.split(" ")[1];
+
+  const refreshToken = await RefreshTokenModel.findOne({
+    refreshToken: token,
+  });
+
+  if (!refreshToken) {
+    return res
+      .status(401)
+      .send({ found: false, error: "Refresh token not found" });
+  }
+
+  res.status(200).send({
+    found: true,
+    refreshToken: refreshToken.refreshToken,
+  });
+});
+
 export default router;
