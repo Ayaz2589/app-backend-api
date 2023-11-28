@@ -1,11 +1,10 @@
-interface User {
-  user: {
-    id: number;
-    email: string;
-    password: string;
-    createdAt?: string;
-  };
-  iat: number;
+import { Types } from "mongoose";
+
+interface DBUser {
+  _id: Types.ObjectId;
+  email: string;
+  password: string;
+  createdAt?: string;
 }
 
-export default User;
+export default DBUser;

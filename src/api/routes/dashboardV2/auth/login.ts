@@ -1,7 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { User } from "../../../../db/models";
+import { generateToken, refreshToken as getRefreshToken } from "./utils";
 
 const router = express.Router();
 
@@ -18,18 +18,11 @@ router.post("/login", async (req, res) => {
     return res.status(400).send({ error: "Incorrect password" });
   }
 
-  const accessToken = jwt.sign(
-    { user },
-    process.env.ACCESS_TOKEN_SECRET || "",
-    {
-      expiresIn: "1hr",
-    }
-  );
+  //@ts-expect-error cannot figure out mongoose type error
+  const accessToken = generateToken(user);
 
-  const refreshToken = jwt.sign(
-    { user },
-    process.env.REFRESH_TOKEN_SECRET || ""
-  );
+  //@ts-expect-error cannot figure out mongoose type error
+  const refreshToken = getRefreshToken(user);
 
   res.status(200).send({ accessToken, refreshToken });
 });
