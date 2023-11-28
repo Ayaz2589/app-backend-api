@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { User } from "../../../../db/models";
 
 const router = express.Router();
@@ -7,7 +8,7 @@ const router = express.Router();
 router.post("/users", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user != null) {
-    return res.status(400).send({ error: "User already exists" });
+    return res.status(400).send({ error: "User doesn't exists" });
   }
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -106,20 +107,25 @@ router.delete("/:id", async (req, res) => {
   res.status(200).send();
 });
 
-// router.post("/users/login", async (req, res) => {
-//   const user = users.find((user) => user.email === req.body.email);
-//   if (user == null) {
-//     return res.status(400).send("Cannot find user");
-//   }
-//   try {
-//     if (await bcrypt.compare(req.body.password, user.password)) {
-//       res.status(200).send("Success");
-//     } else {
-//       res.status(400).send("Not Allowed");
-//     }
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
+router.post("/login", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(400).send({ error: "User doesn't exists" });
+  }
+  const password: string = user.password || "";
+
+  const match = await bcrypt.compare(req.body.password, password);
+
+  if (!match) {
+    return res.status(400).send({ error: "Incorrect password" });
+  }
+
+  const accessToken = jwt.sign(
+    { _id: user._id },
+    process.env.ACCES_TOKEN_SECRET || ""
+  );
+
+  res.status(200).send({ accessToken });
+});
 
 export default router;
