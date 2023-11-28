@@ -1,7 +1,11 @@
 interface User {
-  email: string;
-  password: string;
-  createdAt?: string;
+  user: {
+    id: number;
+    email: string;
+    password: string;
+    createdAt?: string;
+  };
+  iat: number;
 }
 
 export default User;
