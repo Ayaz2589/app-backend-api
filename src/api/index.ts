@@ -28,6 +28,7 @@ app.use("/api/dashboardv2", dashboardV2Router);
 
 const start = async () => {
   try {
+    console.log("CONNECTION: ", CONNECTION);
     await mongoose.connect(CONNECTION);
     console.log("Connected to MongoDB");
   } catch (error) {
