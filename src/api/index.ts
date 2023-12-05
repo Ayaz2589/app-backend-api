@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 mongoose.set("strictQuery", false);
 
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 const CONNECTION = process.env.CONNECTION || "";
 
 app.use(express.json());
