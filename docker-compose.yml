@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - PORT=8080
+      - CONNECTION=mongodb+srv://ayaz2589:Amar_nam_ayaz1!@app-backend-api.mimfewl.mongodb.net/dashboardv2?retryWrites=true&w=majority
+      - ACCESS_TOKEN_SECRET=b910c30e6492793eb530191b8e6a89d38ee99b62445ad5073abf76a8bdf7ec3aec2a96972257803f45a3d674e49622319180d8b61ad4ed259e17a9bd39da407a
+      - REFRESH_TOKEN_SECRET=c724232b11d9dd7f60c92abc2a3fe2fc7f8b6f961ad9914228caf6d083647f5677525453bf94ed43fe8362055bf1439aa461a6439f7a155ce51689923016c425
+      # PORT: ${PORT}
+      # CONNECTION: ${CONNECTION}
+      # ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      # REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
