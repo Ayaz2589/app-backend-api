@@ -1,22 +1,14 @@
 import express from "express";
+import users from "./users";
+
 const router = express.Router();
 
-import { createDummyData } from "../../dashboard/utils";
-
 router.get("/status", (req, res) => {
-  res.status(200).send("Dashboard API is running");
+  res
+    .status(200)
+    .send({ isActive: true, message: "Dashboard V2 API is running" });
 });
 
-router.get("/get-dummy-data", (req, res) => {
-  const getDummyData = async () => {
-    try {
-      const response = await createDummyData();
-      res.status(200).json(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  getDummyData();
-});
+router.use("/users", users);
 
 export default router;
