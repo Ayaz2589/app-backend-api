@@ -2,59 +2,91 @@
   "info": {
     "_postman_id": "2d08290f-b89c-49eb-98e0-7b45395ee1ba",
     "name": "Node Backend API Collection",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
     "_exporter_id": "955600"
   },
   "item": [
     {
-      "name": "Dashboard",
+      "name": "dashboard",
       "item": [
         {
-          "name": "Status",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8080/api/dashboard/status",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "dashboard", "status"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Dummy Data",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8080/api/dashboard/get-dummy-data",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "dashboard", "get-dummy-data"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "DashboardV2",
-      "item": [
-        {
-          "name": "Auth",
+          "name": "users",
           "item": [
             {
-              "name": "Login",
+              "name": "Get All Users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{dashboard_users}}/list"
+              },
+              "response": []
+            },
+            {
+              "name": "Get ID By Email",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"ayaz1@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{dashboard_users}}/id-by-email"
+              },
+              "response": []
+            },
+            {
+              "name": "Get User by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{dashboard_users}}/:id",
+                  "host": ["{{dashboard_users}}"],
+                  "path": [":id"],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6588b711c5537f548874f4b2"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create User",
               "request": {
                 "method": "POST",
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"passwo\"\n}",
+                  "raw": "{\n    \"email\": \"ayaz1@gmail.com\",\n    \"password\": \"password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{dashboard_users}}"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"password\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -62,374 +94,217 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:8080/api/dashboardv2/users/login",
-                  "protocol": "http",
-                  "host": ["localhost"],
-                  "port": "8080",
-                  "path": ["api", "dashboardv2", "users", "login"]
+                  "raw": "{{dashboard_users}}/:id",
+                  "host": ["{{dashboard_users}}"],
+                  "path": [":id"],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "6588b80ec5537f548874f4be"
+                    }
+                  ]
                 }
               },
               "response": []
             },
             {
-              "name": "New Request",
+              "name": "Update User Email Address",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"new_email\": \"ayaz10@gmail.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{dashboard_users}}/update-email/:id",
+                  "host": ["{{dashboard_users}}"],
+                  "path": ["update-email", ":id"],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "656503640f1a87cc3905edab"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Password",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"old_password\": \"password1\",\n    \"new_password\": \"password2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{dashboard_users}}/update-password/:id",
+                  "host": ["{{dashboard_users}}"],
+                  "path": ["update-password", ":id"],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "656503640f1a87cc3905edab"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Check Password",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
               "request": {
                 "method": "GET",
-                "header": []
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"password\": \"password2\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{dashboard_users}}/check-password/:id",
+                  "host": ["{{dashboard_users}}"],
+                  "path": ["check-password", ":id"],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "656503640f1a87cc3905edab"
+                    }
+                  ]
+                }
               },
               "response": []
             }
           ]
-        },
-        {
-          "name": "Status",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8080/api/dashboardv2/status",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "dashboardv2", "status"]
-            }
-          },
-          "response": []
         }
       ]
     },
     {
-      "name": "Database",
+      "name": "authentication",
       "item": [
         {
-          "name": "dashboardv2",
-          "item": [
-            {
-              "name": "Users",
-              "item": [
-                {
-                  "name": "Get All Users",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/list",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": ["list"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Get ID By Email",
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"email\": \"ayaz20@gmail.com\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/id-by-email",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": ["id-by-email"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Get User by ID",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/:id",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": [":id"],
-                      "variable": [
-                        {
-                          "key": "id",
-                          "value": "656503640f1a87cc3905edab"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Create User",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"email\": \"ayaz1@gmail.com\",\n    \"password\": \"password\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}",
-                      "host": ["{{dashboard_v2_users}}"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Delete User",
-                  "request": {
-                    "method": "DELETE",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"password\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/:id",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": [":id"],
-                      "variable": [
-                        {
-                          "key": "id",
-                          "value": "6565e97c8bdd99820baa6935"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Update User Email Address",
-                  "request": {
-                    "method": "PATCH",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"new_email\": \"ayaz10@gmail.com\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/update-email/:id",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": ["update-email", ":id"],
-                      "variable": [
-                        {
-                          "key": "id",
-                          "value": "656503640f1a87cc3905edab"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Update Password",
-                  "request": {
-                    "method": "PATCH",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"old_password\": \"password1\",\n    \"new_password\": \"password2\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/update-password/:id",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": ["update-password", ":id"],
-                      "variable": [
-                        {
-                          "key": "id",
-                          "value": "656503640f1a87cc3905edab"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Check Password",
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"password\": \"password2\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_users}}/check-password/:id",
-                      "host": ["{{dashboard_v2_users}}"],
-                      "path": ["check-password", ":id"],
-                      "variable": [
-                        {
-                          "key": "id",
-                          "value": "656503640f1a87cc3905edab"
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "token": ""
+              }
             },
-            {
-              "name": "Auth",
-              "item": [
-                {
-                  "name": "Login",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"password\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_auth}}/login",
-                      "host": ["{{dashboard_v2_auth}}"],
-                      "path": ["login"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Get New Access Token",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1NjRmMGY0MmY2NDM5ODQ2NmI0ZDY4ZiIsInBhc3N3b3JkIjoiJDJiJDEwJGgvOURHd0kyaGN4Z0VtZURLRnN3MC54VVlvTzhRdVlqMThXODJoLkI1emdiUENmQWZyWXMyIiwiZW1haWwiOiJheWF6QGdtYWlsLmNvbSIsImNyZWF0ZWRBdCI6IjIwMjMtMTEtMjdUMTk6NDE6NDAuMzkxWiIsIl9fdiI6MH0sImlhdCI6MTcwMTE4OTY1Mn0.mdQLxlMFvIR4CQeKmrO79AsSxgoNiuLYhhcw-hvApKw",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_auth}}/token",
-                      "host": ["{{dashboard_v2_auth}}"],
-                      "path": ["token"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Check DB for Refresh Token",
-                  "request": {
-                    "auth": {
-                      "type": "bearer",
-                      "bearer": [
-                        {
-                          "key": "token",
-                          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1NjRmMGY0MmY2NDM5ODQ2NmI0ZDY4ZiIsInBhc3N3b3JkIjoiJDJiJDEwJGgvOURHd0kyaGN4Z0VtZURLRnN3MC54VVlvTzhRdVlqMThXODJoLkI1emdiUENmQWZyWXMyIiwiZW1haWwiOiJheWF6QGdtYWlsLmNvbSIsImNyZWF0ZWRBdCI6IjIwMjMtMTEtMjdUMTk6NDE6NDAuMzkxWiIsIl9fdiI6MH0sImlhdCI6MTcwMTE4OTY1Mn0.mdQLxlMFvIR4CQeKmrO79AsSxgoNiuLYhhcw-hvApKw",
-                          "type": "string"
-                        }
-                      ]
-                    },
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{dashboard_v2_auth}}/check-db-for-refresh-token",
-                      "host": ["{{dashboard_v2_auth}}"],
-                      "path": ["check-db-for-refresh-token"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Signup",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"password\"\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{dashboard_v2_auth}}/signup",
-                      "host": ["{{dashboard_v2_auth}}"],
-                      "path": ["signup"]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "Delete User",
-                  "request": {
-                    "method": "DELETE",
-                    "header": [],
-                    "url": {
-                      "raw": "{{dashboard_v2_auth}}/logout",
-                      "host": ["{{dashboard_v2_auth}}"],
-                      "path": ["logout"]
-                    }
-                  },
-                  "response": []
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
                 }
-              ]
-            }
-          ]
+              }
+            },
+            "url": "{{authentication}}/login"
+          },
+          "response": []
+        },
+        {
+          "name": "Get New Access Token",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1NjYxZjk4ZTZlYTE0MWZlYTRjMzg5NyIsInBhc3N3b3JkIjoiJDJiJDEwJEtvQkVFN2hOOU4yOXRPSWVydUR5eS4xU2ZsYUZ3U2l4c1o3dzByVDlEWmlZcVBBaUdXUkdlIiwiZW1haWwiOiJheWF6QGdtYWlsLmNvbSIsImNyZWF0ZWRBdCI6IjIwMjMtMTEtMjhUMTc6MTI6NTYuNDA1WiIsIl9fdiI6MH0sImlhdCI6MTcwMTE5Mjc5MH0.rzpQnRadUK5I8KEmOt_U7zd2CwURUxApTYPmxGCM7Xs"
+              }
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{authentication}}/token"
+          },
+          "response": []
+        },
+        {
+          "name": "Check DB for Refresh Token",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY1NjRmMGY0MmY2NDM5ODQ2NmI0ZDY4ZiIsInBhc3N3b3JkIjoiJDJiJDEwJGgvOURHd0kyaGN4Z0VtZURLRnN3MC54VVlvTzhRdVlqMThXODJoLkI1emdiUENmQWZyWXMyIiwiZW1haWwiOiJheWF6QGdtYWlsLmNvbSIsImNyZWF0ZWRBdCI6IjIwMjMtMTEtMjdUMTk6NDE6NDAuMzkxWiIsIl9fdiI6MH0sImlhdCI6MTcwMTE4OTY1Mn0.mdQLxlMFvIR4CQeKmrO79AsSxgoNiuLYhhcw-hvApKw"
+              }
+            },
+            "method": "GET",
+            "header": [],
+            "url": "{{authentication}}/check-db-for-refresh-token"
+          },
+          "response": []
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"ayaz@gmail.com\",\n    \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{authentication}}/signup"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InBhc3N3b3JkIjoiJDJiJDEwJC9sS2x3Z1d4Z0M4ODhwNjRuTDN2TS5mTGgxMTd6NllTNjkvaDZzOEpEWTNMRWRVbFU1c3UuIiwiZW1haWwiOiJheWF6QGdtYWlsLmNvbSIsImNyZWF0ZWRBdCI6IjIwMjMtMTItMjRUMjI6NTY6MTcuMzM3WiIsIl9pZCI6IjY1ODhiNzExYzU1MzdmNTQ4ODc0ZjRiMiJ9LCJpYXQiOjE3MDM0NTg1Nzd9.RwnSt0Fbjaldi1D3W7rfSEocVxNzRskDgoRyIN2Z_2E"
+              }
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{authentication}}/logout"
+          },
+          "response": []
         }
       ]
     },
@@ -438,13 +313,7 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": {
-          "raw": "http://localhost:8080/status",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["status"]
-        }
+        "url": "{{base_url}}/status"
       },
       "response": []
     }
