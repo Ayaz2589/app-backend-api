@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { DBUser } from "../../../../../types";
+import { DBUser } from "../../../../types";
 
 const refreshToken = (user: DBUser) => {
   const refreshToken = jwt.sign(

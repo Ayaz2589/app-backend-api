@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import dashboardRouter from "./routes/dashboard";
-import dashboardV2Router from "./routes/dashboardV2";
+import authRouter from "./routes/auth";
 
 dotenv.config();
 const app = express();
@@ -23,8 +23,8 @@ app.get("/status", (req: Request, res: Response) => {
   res.status(200).send("API is running");
 });
 
+app.use("/api/auth", authRouter);
 app.use("/api/dashboard", dashboardRouter);
-app.use("/api/dashboardv2", dashboardV2Router);
 
 const start = async () => {
   try {
