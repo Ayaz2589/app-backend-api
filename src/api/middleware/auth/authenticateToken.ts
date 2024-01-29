@@ -21,9 +21,8 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
       return res.status(403).send({ error: "Forbidden" });
     }
     if (user) {
-      console.log()
+      req.user = user;
     }
-    req.user = user;
   });
 
   next();
