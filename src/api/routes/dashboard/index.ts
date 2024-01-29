@@ -1,5 +1,6 @@
 import express from "express";
 import users from "./users";
+import chartData from "./chart-data";
 
 const router = express.Router();
 
@@ -10,5 +11,6 @@ router.get("/status", (req, res) => {
 });
 
 router.use("/users", users);
+router.use("/chart-data", chartData);
 
 export default router;
