@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { User, RefreshTokenModel } from "../../../db/models";
 import { generateToken, refreshToken as getRefreshToken } from "./utils";
+import { authenticateToken } from "../../middleware";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -80,9 +81,8 @@ router.delete("/logout", async (req, res) => {
   res.status(200).send({ isLoggedin: false });
 });
 
-router.post("/token", async (req, res) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1];
+router.post("/token", authenticateToken, async (req, res) => {
+  const token = req.body.token;
 
   const refreshToken = await RefreshTokenModel.findOne({
     refreshToken: token,
