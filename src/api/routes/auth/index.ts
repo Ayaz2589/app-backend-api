@@ -64,9 +64,8 @@ router.post("/login", async (req, res) => {
   res.status(200).send({ accessToken, refreshToken, isLoggedin: true });
 });
 
-router.delete("/logout", async (req, res) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1];
+router.delete("/logout", authenticateToken, async (req, res) => {
+  const token = req.body.refreshToken;
 
   const refreshToken = await RefreshTokenModel.findOne({
     refreshToken: token,
