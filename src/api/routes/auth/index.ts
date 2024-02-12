@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { User, RefreshTokenModel } from "../../../db/models";
 import { generateToken, refreshToken as getRefreshToken } from "./utils";
 import { authenticateToken } from "../../middleware";
+import { AuthErrorHandler } from "../../error";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
@@ -37,31 +38,35 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) {
-    return res.status(400).send({ error: "User doesn't exists" });
+router.post("/login", async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      throw AuthErrorHandler.unauthorizedUser();
+    }
+    const password: string = user.password || "";
+  
+    const match = await bcrypt.compare(req.body.password, password);
+  
+    if (!match) {
+      throw AuthErrorHandler.unauthorizedPassword();
+    }
+  
+    //@ts-expect-error cannot figure out mongoose type error
+    const accessToken = generateToken(user);
+  
+    //@ts-expect-error cannot figure out mongoose type error
+    const refreshToken = getRefreshToken(user);
+  
+    const refreshTokenToSave = new RefreshTokenModel({
+      refreshToken,
+    });
+    await refreshTokenToSave.save();
+  
+    res.status(200).send({ accessToken, refreshToken, isLoggedin: true });
+  } catch (error: any) {
+    res.status(error.statusCode).send({ error });
   }
-  const password: string = user.password || "";
-
-  const match = await bcrypt.compare(req.body.password, password);
-
-  if (!match) {
-    return res.status(400).send({ error: "Incorrect password" });
-  }
-
-  //@ts-expect-error cannot figure out mongoose type error
-  const accessToken = generateToken(user);
-
-  //@ts-expect-error cannot figure out mongoose type error
-  const refreshToken = getRefreshToken(user);
-
-  const refreshTokenToSave = new RefreshTokenModel({
-    refreshToken,
-  });
-  await refreshTokenToSave.save();
-
-  res.status(200).send({ accessToken, refreshToken, isLoggedin: true });
 });
 
 router.delete("/logout", authenticateToken, async (req, res) => {
