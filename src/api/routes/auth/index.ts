@@ -11,9 +11,7 @@ const router = express.Router();
 router.post("/signup", async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    if (user != null) {
-      throw AuthErrorHandler.unauthorizedUserAlreadyExists()
-    }
+    if (user != null) throw AuthErrorHandler.unauthorizedUserAlreadyExists();
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = new User({
@@ -21,6 +19,9 @@ router.post("/signup", async (req, res, next) => {
       password: hashedPassword,
       createdAt: new Date().toISOString(),
     });
+
+    if (!newUser) throw AuthErrorHandler.serverError();
+
     //@ts-expect-error cannot figure out mongoose type error
     const accessToken = generateToken(newUser);
 
