@@ -13,6 +13,10 @@ class AuthErrorHandler {
     return new AuthErrorHandler(401, "Unauthorized: User Not Found");
   }
 
+  static unauthorizedUserAlreadyExists() {
+    return new AuthErrorHandler(409, "Unauthorized: User Already Exists");
+  }
+
   static unauthorizedPassword() {
     return new AuthErrorHandler(401, "Unauthorized: Incorrect Password");
   }

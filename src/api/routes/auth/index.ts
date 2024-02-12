@@ -5,37 +5,37 @@ import { generateToken, refreshToken as getRefreshToken } from "./utils";
 import { authenticateToken } from "../../middleware";
 import { AuthErrorHandler } from "../../error";
 import jwt from "jsonwebtoken";
-import { errorLogger } from "../../error";
 
 const router = express.Router();
 
-router.post("/signup", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (user != null) {
-    return res.status(400).send({ error: "User already exists" });
-  }
+router.post("/signup", async (req, res, next) => {
   try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user != null) {
+      throw AuthErrorHandler.unauthorizedUserAlreadyExists()
+    }
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = new User({
+    const newUser = new User({
       email: req.body.email,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
     });
     //@ts-expect-error cannot figure out mongoose type error
-    const accessToken = generateToken(user);
+    const accessToken = generateToken(newUser);
 
     //@ts-expect-error cannot figure out mongoose type error
-    const refreshToken = getRefreshToken(user);
+    const refreshToken = getRefreshToken(newUser);
     const refreshTokenToSave = new RefreshTokenModel({
       refreshToken,
     });
 
-    await user.save();
+    await newUser.save();
     await refreshTokenToSave.save();
 
     res.status(201).send({ accessToken, refreshToken });
   } catch (error) {
-    res.status(500).send({ error, message: "Unable to create account" });
+    next(error)
   }
 });
 
