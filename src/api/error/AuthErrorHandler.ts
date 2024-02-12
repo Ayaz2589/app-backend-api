@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 class AuthErrorHandler {
-  private statusCode: number;
-  private message: string;
+  public statusCode: number;
+  public message: string;
 
   constructor(statusCode: number, message: string) {
     this.statusCode = statusCode;

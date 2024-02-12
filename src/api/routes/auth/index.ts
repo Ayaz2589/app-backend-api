@@ -5,6 +5,7 @@ import { generateToken, refreshToken as getRefreshToken } from "./utils";
 import { authenticateToken } from "../../middleware";
 import { AuthErrorHandler } from "../../error";
 import jwt from "jsonwebtoken";
+import { errorLogger } from "../../error";
 
 const router = express.Router();
 
@@ -65,7 +66,7 @@ router.post("/login", async (req, res, next) => {
   
     res.status(200).send({ accessToken, refreshToken, isLoggedin: true });
   } catch (error: any) {
-    res.status(error.statusCode).send({ error });
+    next(error);
   }
 });
 

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import dashboardRouter from "./routes/dashboard";
 import authRouter from "./routes/auth";
+import { authErrorHandler } from "./middleware";
 
 dotenv.config();
 const app = express();
@@ -11,6 +12,17 @@ mongoose.set("strictQuery", false);
 
 const PORT = 8080;
 const CONNECTION = process.env.CONNECTION || "";
+
+const start = async () => {
+  try {
+    console.log("CONNECTION: ", CONNECTION);
+    await mongoose.connect(CONNECTION);
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error(error);
+  }
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+};
 
 app.use(express.json());
 app.use(
@@ -26,17 +38,7 @@ app.get("/status", (req: Request, res: Response) => {
 app.use("/api/auth", authRouter);
 app.use("/api/dashboard", dashboardRouter);
 
-const start = async () => {
-  try {
-    console.log("CONNECTION: ", CONNECTION);
-    await mongoose.connect(CONNECTION);
-    console.log("Connected to MongoDB");
-  } catch (error) {
-    console.error(error);
-  }
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-};
-
+app.use(authErrorHandler);
 start();
 
 export default app;
