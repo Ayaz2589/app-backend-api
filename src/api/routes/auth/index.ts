@@ -71,20 +71,24 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.delete("/logout", authenticateToken, async (req, res) => {
-  const token = req.body.refreshToken;
+router.delete("/logout", authenticateToken, async (req, res, next) => {
+  try {
+    const token = req.body.refreshToken;
 
-  const refreshToken = await RefreshTokenModel.findOne({
-    refreshToken: token,
-  });
-
-  if (!refreshToken) {
-    return res.status(401).send({ error: "Refresh token not found" });
+    const refreshToken = await RefreshTokenModel.findOne({
+      refreshToken: token,
+    });
+  
+    if (!refreshToken) {
+      throw AuthErrorHandler.refreshTokenNotFound();
+    }
+  
+    await RefreshTokenModel.deleteOne({ refreshToken: token });
+  
+    res.status(200).send({ isLoggedin: false });
+  } catch (error: any) {
+    next(error);
   }
-
-  await RefreshTokenModel.deleteOne({ refreshToken: token });
-
-  res.status(200).send({ isLoggedin: false });
 });
 
 router.post("/token", authenticateToken, async (req, res) => {
