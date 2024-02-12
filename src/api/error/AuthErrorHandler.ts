@@ -30,11 +30,15 @@ class AuthErrorHandler {
   }
 
   static JWTExpired() {
-    return new AuthErrorHandler(403, "JWT token expired");
+    return new AuthErrorHandler(403, "Unauthorized: JWT token expired");
   }
 
   static refreshTokenNotFound() {
-    return new AuthErrorHandler(401, "Refresh token not found");
+    return new AuthErrorHandler(401, "Unauthorized: Refresh token not found");
+  }
+
+  static invalidRefreshToken() {
+    return new AuthErrorHandler(401, "Unauthorized: Invalid refresh token");
   }
 
   static serverError() {
