@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { errorLogger } from '../../error';
 import { AuthErrorHandler } from '../../error';
 
-const authErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+const ErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   errorLogger.logError(err);
 
   if (err instanceof AuthErrorHandler) {
@@ -13,4 +13,4 @@ const authErrorHandler = (err: Error, req: Request, res: Response, next: NextFun
   res.status(500).send("Something went wrong");
 }
 
-export default authErrorHandler;
+export default ErrorHandler;
