@@ -91,33 +91,34 @@ router.delete("/logout", authenticateToken, async (req, res, next) => {
   }
 });
 
-router.post("/token", authenticateToken, async (req, res) => {
-  const token = req.body.token;
+router.post("/token", authenticateToken, async (req, res, next) => {
+  try {
+    const token = req.body.token;
 
-  const refreshToken = await RefreshTokenModel.findOne({
-    refreshToken: token,
-  });
-
-  if (!refreshToken) {
-    return res.status(401).send({ error: "Refresh token not found" });
+    const refreshToken = await RefreshTokenModel.findOne({
+      refreshToken: token,
+    });
+  
+    if (!refreshToken) throw AuthErrorHandler.refreshTokenNotFound();
+  
+    const { refreshToken: tokenToVerify } = refreshToken;
+  
+    jwt.verify(
+      tokenToVerify as string,
+      process.env.REFRESH_TOKEN_SECRET || "",
+      (err, token) => {
+        if (err) throw AuthErrorHandler.invalidRefreshToken();
+  
+        if (token) {
+          //@ts-expect-error cannot figure out mongoose type error
+          const accessToken = generateToken(token.user);
+          res.status(200).send({ accessToken });
+        }
+      }
+    );
+  } catch (error) {
+    next(error);
   }
-
-  const { refreshToken: tokenToVerify } = refreshToken;
-
-  jwt.verify(
-    tokenToVerify as string,
-    process.env.REFRESH_TOKEN_SECRET || "",
-    (err, token) => {
-      if (err) {
-        return res.status(403).send({ error: "Forbidden" });
-      }
-      if (token) {
-        //@ts-expect-error cannot figure out mongoose type error
-        const accessToken = generateToken(token.user);
-        res.status(200).send({ accessToken });
-      }
-    }
-  );
 });
 
 router.get("/check-db-for-refresh-token", async (req, res) => {
