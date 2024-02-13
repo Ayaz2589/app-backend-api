@@ -50,30 +50,32 @@ router.patch("/update-email/:id", async (req, res, next) => {
   }
 });
 
-router.patch("/update-password/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
+router.patch("/update-password/:id", async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
 
-  if (user == null) {
-    return res.status(400).send({ error: "Cannot find user" });
-  }
-
-  const password: string = user.password || "";
-
-  const match = await bcrypt.compare(req.body.old_password, password);
-
-  if (!match) {
-    return res.status(400).send({ error: "Incorrect password" });
-  }
-
-  const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
-
-  const filter = { email: user.email };
-  const update = { $set: { password: hashedNewPassword } };
-
-  const result = await User.updateOne(filter, update);
-
-  if (result.acknowledged && result.modifiedCount === 1) {
-    res.status(200).send();
+    if (user == null) throw UserErrorHandler.userNotFound();
+  
+    const password: string = user.password || "";
+  
+    const match = await bcrypt.compare(req.body.old_password, password);
+  
+    if (!match) throw UserErrorHandler.invalidPassword();
+  
+    const hashedNewPassword = await bcrypt.hash(req.body.new_password, 10);
+  
+    const filter = { email: user.email };
+    const update = { $set: { password: hashedNewPassword } };
+  
+    const result = await User.updateOne(filter, update);
+  
+    if (result.acknowledged && result.modifiedCount === 1) {
+      res.status(200).send();
+      return;
+    }
+    throw UserErrorHandler.unableToUpdateUser();
+  } catch (error) {
+    next(error);
   }
 });
 

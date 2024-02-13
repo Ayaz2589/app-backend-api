@@ -15,7 +15,7 @@ const ErrorHandler = (err: Error, req: Request, res: Response, next: NextFunctio
     return
   }
   
-  res.status(500).send("Something went wrong");
+  res.status(500).send("Something went wrong: " + err.message);
 }
 
 export default ErrorHandler;
