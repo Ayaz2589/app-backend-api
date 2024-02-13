@@ -121,22 +121,4 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.get("/check-password/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  if (user == null) {
-    return res.status(400).send({ error: "Cannot find user" });
-  }
-
-  const password: string = user.password || "";
-
-  const match = await bcrypt.compare(req.body.password, password);
-
-  if (!match) {
-    return res.status(400).send({ error: "Incorrect password" });
-  }
-
-  res.status(200).send({ message: "Correct password" });
-});
-
 export default router;
