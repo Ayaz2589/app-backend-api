@@ -37,6 +37,14 @@ class AuthErrorHandler {
     return new AuthErrorHandler(401, "Unauthorized: Refresh token not found");
   }
 
+  static invalidAccessToken() {
+    return new AuthErrorHandler(401, "Unauthorized: Invalid access token");
+  }
+
+  static accessTokenNotFound() {
+    return new AuthErrorHandler(401, "Unauthorized: Access token not found");
+  }
+
   static invalidRefreshToken() {
     return new AuthErrorHandler(401, "Unauthorized: Invalid refresh token");
   }

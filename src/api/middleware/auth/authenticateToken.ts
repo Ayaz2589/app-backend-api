@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "../../../types";
+import { AuthErrorHandler } from "../../error";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -9,23 +10,24 @@ declare module "express-serve-static-core" {
 }
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader?.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).send({ error: "Unauthorized" });
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader?.split(" ")[1];
+  
+    if (!token) throw AuthErrorHandler.accessTokenNotFound();
+  
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "", (err, user) => {
+      if (err) throw AuthErrorHandler.invalidAccessToken();
+      
+      if (user) {
+        req.user = user;
+      }
+    });
+  
+    next();
+  } catch (error) {
+    next(error);
   }
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "", (err, user) => {
-    if (err) {
-      return res.status(403).send({ error: "Forbidden" });
-    }
-    if (user) {
-      req.user = user;
-    }
-  });
-
-  next();
 };
 
 export default authenticateToken;
