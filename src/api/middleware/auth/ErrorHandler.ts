@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { errorLogger } from '../../error';
-import { AuthErrorHandler } from '../../error';
+import { AuthErrorHandler, UserErrorHandler } from '../../error';
 
 const ErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   errorLogger.logError(err);
@@ -10,6 +10,11 @@ const ErrorHandler = (err: Error, req: Request, res: Response, next: NextFunctio
     return
   }
 
+  if (err instanceof UserErrorHandler) {
+    res.status(err.statusCode).send({ err });
+    return
+  }
+  
   res.status(500).send("Something went wrong");
 }
 
