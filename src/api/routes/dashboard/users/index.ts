@@ -79,9 +79,13 @@ router.patch("/update-password/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.status(200).send();
+router.delete("/:id", async (req, res, next) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).send();
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/list", async (req, res) => {
