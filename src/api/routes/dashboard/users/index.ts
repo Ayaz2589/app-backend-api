@@ -88,9 +88,13 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
-router.get("/list", async (req, res) => {
-  const users = await User.find();
-  res.status(200).send({ users });
+router.get("/list", async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200).send({ users });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/id-by-email", async (req, res) => {
