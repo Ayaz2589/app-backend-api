@@ -21,6 +21,10 @@ class UserErrorHandler {
     return new UserErrorHandler(400, "Unable to update user");
   }
 
+  static invalidPassword() {
+    return new UserErrorHandler(401, "Invalid Password");
+  }
+
   static serverError() {
     return new UserErrorHandler(500, "Internal server error");
   }
