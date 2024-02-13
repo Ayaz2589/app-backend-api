@@ -97,9 +97,16 @@ router.get("/list", async (req, res, next) => {
   }
 });
 
-router.get("/id-by-email", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  res.status(200).send({ id: user?._id, email: user?.email });
+router.get("/id-by-email", async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (user == null) throw UserErrorHandler.userNotFound();
+
+    res.status(200).send({ id: user?._id, email: user?.email });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:id", async (req, res) => {
