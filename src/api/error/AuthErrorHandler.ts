@@ -60,10 +60,6 @@ class AuthErrorHandler {
   getMessage() {
     return this.message;
   }
-
-  send(res: Response) {
-    return res.status(this.statusCode).send({ error: this.message });
-  }
 }
 
 export default AuthErrorHandler;
