@@ -17,6 +17,10 @@ class UserErrorHandler {
     return new UserErrorHandler(409, "User Already Exists");
   }
 
+  static unableToUpdateUser() {
+    return new UserErrorHandler(400, "Unable to update user");
+  }
+
   static serverError() {
     return new UserErrorHandler(500, "Internal server error");
   }

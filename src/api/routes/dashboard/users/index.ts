@@ -25,35 +25,28 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/list", async (req, res) => {
-  const users = await User.find();
-  res.status(200).send({ users });
-});
+router.patch("/update-email/:id", async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
 
-router.get("/id-by-email", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  res.status(200).send({ id: user?._id, email: user?.email });
-});
+    if (user == null) throw UserErrorHandler.userNotFound();
 
-router.get("/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.status(200).send({ user });
-});
+    const userExists = await User.findOne({ email: req.body.new_email });
 
-router.patch("/update-email/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  if (user == null) {
-    return res.status(400).send({ error: "Cannot find user" });
-  }
-
-  const filter = { email: user.email };
-  const update = { $set: { email: req.body.new_email } };
-
-  const result = await User.updateOne(filter, update);
-
-  if (result.acknowledged && result.modifiedCount === 1) {
-    res.status(200).send();
+    if (userExists != null) throw UserErrorHandler.userAlreadyExists();
+  
+    const filter = { email: user.email };
+    const update = { $set: { email: req.body.new_email } };
+  
+    const result = await User.updateOne(filter, update);
+  
+    if (result.acknowledged && result.modifiedCount === 1) {
+      res.status(200).send();
+      return
+    }
+    throw UserErrorHandler.unableToUpdateUser();
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -84,6 +77,26 @@ router.patch("/update-password/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.status(200).send();
+});
+
+router.get("/list", async (req, res) => {
+  const users = await User.find();
+  res.status(200).send({ users });
+});
+
+router.get("/id-by-email", async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  res.status(200).send({ id: user?._id, email: user?.email });
+});
+
+router.get("/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.status(200).send({ user });
+});
+
 router.get("/check-password/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
 
@@ -100,11 +113,6 @@ router.get("/check-password/:id", async (req, res) => {
   }
 
   res.status(200).send({ message: "Correct password" });
-});
-
-router.delete("/:id", async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.status(200).send();
 });
 
 export default router;
