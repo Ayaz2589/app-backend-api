@@ -109,9 +109,16 @@ router.get("/id-by-email", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.status(200).send({ user });
+router.get("/:id", async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (user == null) throw UserErrorHandler.userNotFound();
+
+    res.status(200).send({ user });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/check-password/:id", async (req, res) => {
