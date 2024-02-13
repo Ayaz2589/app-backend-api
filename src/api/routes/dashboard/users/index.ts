@@ -1,25 +1,27 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { User } from "../../../../db/models";
+import { UserErrorHandler } from "../../../error";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (user != null) {
-    return res.status(400).send({ error: "User already exists" });
-  }
+router.post("/", async (req, res, next) => {
   try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user != null) throw UserErrorHandler.userAlreadyExists();
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = new User({
+    const newUser = new User({
       email: req.body.email,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
     });
-    await user.save();
+
+    await newUser.save();
+    
     res.status(201).send();
   } catch (error) {
-    res.status(500).send(error);
+    next(error);
   }
 });
 
