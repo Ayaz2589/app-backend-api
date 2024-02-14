@@ -17,7 +17,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     if (!token) throw AuthErrorHandler.accessTokenNotFound();
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "", (err, user) => {
-      if (err) throw AuthErrorHandler.invalidAccessToken();
+      if (err) throw AuthErrorHandler.JWTExpired();
       
       if (user) {
         req.user = user;

@@ -6,7 +6,7 @@ const generateToken = (user: DBUser) => {
     { user },
     process.env.ACCESS_TOKEN_SECRET || "",
     {
-      expiresIn: "1hr",
+      expiresIn: "10s",
     }
   );
 
